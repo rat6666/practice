@@ -1,14 +1,24 @@
 package main
 
-import "collection/linkedlist"
+import (
+	"collection/linkedlist"
+	"fmt"
+)
 
 func main() {
-	collection := linkedlist.Collection{}
+	collection := linkedlist.LinkedList{}
 	for i := 2; i < 10; i++ {
-		collection.AddElement(i)
+		collection.AddNode(i)
 	}
 	collection.PrintCollection()
-	collection.AddElement(55)
+	collection.AddNode(55)
+	collection.PrintCollection()
+	fmt.Println(collection.Get(3).GetValue())
+	fmt.Println(collection.Get(15))
+	collection.FirstElement()
+	collection.LastElement()
+	collection.LengthCollection()
+	collection.RemoveNode(3)
 	collection.PrintCollection()
 
 }

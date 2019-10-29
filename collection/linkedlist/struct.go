@@ -1,15 +1,13 @@
 package linkedlist
 
-//Collection LinkedList
-type Collection struct {
+type LinkedList struct {
 	Length int
-	First  *Element
-	Last   *Element
+	First  *Node
+	Last   *Node
 }
 
-//Element NODE
-type Element struct {
+type Node struct {
 	Value int
-	Next  *Element
-	Prev  *Element
+	Next  *Node
+	Prev  *Node
 }
