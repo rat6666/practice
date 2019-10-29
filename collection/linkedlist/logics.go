@@ -9,7 +9,6 @@ func (c *LinkedList) AddNode(value int) {
 	if c.Length == 0 {
 		c.First = newNode
 		c.Last = newNode
-		c.Length++
 	}
 	newNode.Prev = c.Last
 	c.Last.Next = newNode
@@ -26,7 +25,7 @@ func (c *LinkedList) Get(nodeIndex int) *Node {
 	for i := 0; i < nodeIndex; i++ {
 		nodeValue = nodeValue.Next
 	}
-	fmt.Printf("The value of the element with index %d is %d.\n", nodeIndex, nodeValue.Value)
+	// fmt.Printf("The value of the element with index %d is %d.\n", nodeIndex, nodeValue.Value)
 	return nodeValue
 }
 
@@ -38,7 +37,6 @@ func (c *LinkedList) RemoveNode(removeIndex int) {
 	remove := c.First
 	for i := 0; i < removeIndex; i++ {
 		remove = remove.Next
-		fmt.Println(remove.Prev)
 	}
 	remove.Next.Prev = remove.Prev
 	remove.Prev.Next = remove.Next
@@ -56,16 +54,16 @@ func (c *LinkedList) PrintCollection() {
 }
 
 func (c *LinkedList) FirstElement() *Node {
-	fmt.Printf("First element in linked list is %d.\n", c.First.Value)
+	fmt.Printf("First element in collection is %d.\n", c.First.Value)
 	return c.First
 }
 
 func (c *LinkedList) LastElement() *Node {
-	fmt.Printf("Last element in linked list is %d.\n", c.Last.Value)
+	fmt.Printf("Last element in collection is %d.\n", c.Last.Value)
 	return c.Last
 }
 
 func (c *LinkedList) LengthCollection() int {
-	fmt.Printf("Linked List Length is %d.\n", c.Length)
+	fmt.Printf("Collection Length is %d.\n", c.Length)
 	return c.Length
 }
