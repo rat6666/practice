@@ -29,13 +29,13 @@ func (c *LinkedList) Get(nodeIndex int) *Node {
 	return nodeValue
 }
 
-func (c *LinkedList) RemoveNode(removeIndex int) {
-	if removeIndex > c.Length {
+func (c *LinkedList) RemoveNode(index int) {
+	if index > c.Length {
 		fmt.Println("Index out of range")
 		return
 	}
 	remove := c.First
-	for i := 0; i < removeIndex; i++ {
+	for i := 0; i < index; i++ {
 		remove = remove.Next
 	}
 	remove.Next.Prev = remove.Prev
