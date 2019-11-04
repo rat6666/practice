@@ -1,32 +1,23 @@
 package meteostation
 
-type Station struct {
-	Weather Weather            `json:"weather"`
-	Main    map[string]float64 `json:"main"`
-	Sys     Sys                `json:"sys"`
-	Wind    map[string]float64 `json:"wind"`
-	Name    string             `json:"name"`
+import (
+	"fmt"
+)
+
+type WeatherForecast struct {
 }
 
-type Weather []struct {
-	Description string `json:"description"`
+func (wf WeatherForecast) FormatWeather(w Weather) string {
+	temp, _, _ := w.GetTemperature()
+	speed, gust, direction := w.GetWind()
+	sunrise, sunset := w.GetSun()
+	var wind string
+	if gust != 0 {
+		wind = fmt.Sprintf("ветер %v %vм/с с порывами до %vм/с", direction, speed, gust)
+	} else {
+		wind = fmt.Sprintf("ветер %v %vм/с", direction, speed)
+	}
+	ws := fmt.Sprintf("Сегодня в городе %v %v, температура воздуха %v°С, %v. Влажность воздуха %v. Восход солнца %v, заход солнца %v",
+		w.Name, w.GetCloudiness(), temp, wind, w.GetHumidity(), sunrise, sunset)
+	return ws
 }
-
-type Sys struct {
-	Sunrise int64 `json:"sunrise"`
-	Sunset  int64 `json:"sunset"`
-}
-
-func (s Station) GetTemperature() (temp float64, tempMin float64, tempMax float64) {
-	return s.Main["temp"], s.Main["temp_min"], s.Main["temp_max"]
-}
-
-func (s Station) GetCloudiness() (description string) {
-	return s.Weather[0].Description
-}
-
-func (s Station) GetHumidity() (humidity int) {
-	return int(s.Main["humidity"])
-}
-
-// fmt.Println((time.Unix(NewStation.Sys.Sunrise, 0)).Format("15:55")
