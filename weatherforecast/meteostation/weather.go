@@ -10,6 +10,8 @@ type Weather struct {
 		Description string `json:"description"`
 	} `json:"weather"`
 
+	Dt int64
+
 	Main map[string]float64 `json:"main"`
 
 	Sys struct {
@@ -35,9 +37,14 @@ func (w Weather) GetHumidity() (humidity int) {
 }
 
 func (w Weather) GetSun() (sunrise, sunset string) {
-	sunrise = time.Unix(w.Sys.Sunrise, 0).UTC().Format("15:04")
-	sunset = time.Unix(w.Sys.Sunset, 0).UTC().Format("15:04")
+	sunrise = time.Unix(w.Sys.Sunrise, 0).Format("15:04")
+	sunset = time.Unix(w.Sys.Sunset, 0).Format("15:04")
 	return sunrise, sunset
+}
+
+func (w Weather) GetDate() (date string) {
+	date = time.Unix(w.Dt, 0).Format("2006-01-02")
+	return date
 }
 
 func (w Weather) GetWind() (speed float64, gust float64, direction string) {
@@ -72,7 +79,9 @@ func (w Weather) FormatWeather() string {
 	} else {
 		wind = fmt.Sprintf("ветер %v %vм/с", direction, speed)
 	}
-	ws := fmt.Sprintf("Сегодня в городе %v %v, температура воздуха %v°С, %v. Влажность воздуха %v%v. Восход солнца %v, заход солнца %v",
-		w.Name, w.GetCloudiness(), temp, wind, w.GetHumidity(), "%", sunrise, sunset)
+	ws := fmt.Sprintf("Сегодня, %v в городе %v %v, температура воздуха %v°С, %v."+
+		"Влажность воздуха %v%v. Восход солнца %v, заход солнца %v",
+		w.GetDate(), w.Name, w.GetCloudiness(), temp, wind, w.GetHumidity(),
+		"%", sunrise, sunset)
 	return ws
 }
