@@ -1,6 +1,9 @@
 package meteostation
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Weather struct {
 	Weather []struct {
@@ -14,7 +17,7 @@ type Weather struct {
 		Sunset  int64 `json:"sunset"`
 	} `json:"sys"`
 
-	Wind map[string]int `json:"wind"`
+	Wind map[string]float64 `json:"wind"`
 
 	Name string `json:"name"`
 }
@@ -32,12 +35,12 @@ func (w Weather) GetHumidity() (humidity int) {
 }
 
 func (w Weather) GetSun() (sunrise, sunset string) {
-	sunrise = time.Unix(w.Sys.Sunrise, 0).Format("15:04")
-	sunset = time.Unix(w.Sys.Sunset, 0).Format("15:04")
+	sunrise = time.Unix(w.Sys.Sunrise, 0).UTC().Format("15:04")
+	sunset = time.Unix(w.Sys.Sunset, 0).UTC().Format("15:04")
 	return sunrise, sunset
 }
 
-func (w Weather) GetWind() (speed int, gust int, direction string) {
+func (w Weather) GetWind() (speed float64, gust float64, direction string) {
 	switch {
 	case w.Wind["deg"] >= 341 && w.Wind["deg"] <= 20:
 		direction = "северный"
@@ -57,4 +60,19 @@ func (w Weather) GetWind() (speed int, gust int, direction string) {
 		direction = "северо-западный"
 	}
 	return w.Wind["speed"], w.Wind["gust"], direction
+}
+
+func (w Weather) FormatWeather() string {
+	temp, _, _ := w.GetTemperature()
+	speed, gust, direction := w.GetWind()
+	sunrise, sunset := w.GetSun()
+	var wind string
+	if gust != 0 {
+		wind = fmt.Sprintf("ветер %v %vм/с с порывами до %vм/с", direction, speed, gust)
+	} else {
+		wind = fmt.Sprintf("ветер %v %vм/с", direction, speed)
+	}
+	ws := fmt.Sprintf("Сегодня в городе %v %v, температура воздуха %v°С, %v. Влажность воздуха %v%v. Восход солнца %v, заход солнца %v",
+		w.Name, w.GetCloudiness(), temp, wind, w.GetHumidity(), "%", sunrise, sunset)
+	return ws
 }

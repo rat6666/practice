@@ -6,7 +6,6 @@ import (
 )
 
 func main() {
-	NewStation := m.Meteorologist{}.WeatherForecast("Mahilyow")
-	x := m.WeatherForecast{}
-	fmt.Println(x.FormatWeather(NewStation))
+	NewStation := m.Meteorologist{}.WeatherForecast("Tokio")
+	fmt.Println(NewStation.FormatWeather())
 }

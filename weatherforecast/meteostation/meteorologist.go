@@ -8,14 +8,16 @@ import (
 )
 
 type Meteorologist struct {
+	cnt int
 }
 
-func (m Meteorologist) WeatherForecast(city string) Weather {
+func (Meteorologist) WeatherForecast(city string) Weather {
 	url := "http://api.openweathermap.org/data/2.5/weather?q=" +
 		city +
 		"&lang=ru" +
 		"&units=metric" +
 		"&appid=2c19a8c670afc70f2ae7a81f229fce3d"
+
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("Error")
@@ -24,6 +26,7 @@ func (m Meteorologist) WeatherForecast(city string) Weather {
 	if err != nil {
 		fmt.Println("Error")
 	}
+	fmt.Println(string(body))
 	var NewStation Weather
 	err = json.Unmarshal(body, &NewStation)
 	if err != nil {
