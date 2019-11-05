@@ -7,21 +7,29 @@ import (
 
 type Weather struct {
 	Weather []struct {
-		Description string `json:"description"`
-	} `json:"weather"`
+		Description string
+	}
+
+	List
 
 	Dt int64
 
-	Main map[string]float64 `json:"main"`
+	Main map[string]float64
 
 	Sys struct {
-		Sunrise int64 `json:"sunrise"`
-		Sunset  int64 `json:"sunset"`
-	} `json:"sys"`
+		Sunrise int64
+		Sunset  int64
+	}
 
-	Wind map[string]float64 `json:"wind"`
+	Wind map[string]float64
 
-	Name string `json:"name"`
+	Name string
+
+	Message string
+}
+
+type List []struct {
+	Weather
 }
 
 func (w Weather) GetTemperature() (temp float64, tempMin float64, tempMax float64) {
@@ -83,5 +91,29 @@ func (w Weather) FormatWeather() string {
 		"Влажность воздуха %v%v. Восход солнца %v, заход солнца %v",
 		w.GetDate(), w.Name, w.GetCloudiness(), temp, wind, w.GetHumidity(),
 		"%", sunrise, sunset)
+	return ws
+}
+
+func (l List) FormatWeatherDaily() []string {
+	var ws []string
+	time, err := time.Parse("2006-01-02 15:04:05 +0000 MST", time.Now().UTC().Format("2006-01-02 15:04:05 +0000 MST"))
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	for i := 0; i < len(l); i++ {
+		temp, _, _ := l[i].GetTemperature()
+		speed, gust, direction := l[i].GetWind()
+		var wind string
+		if gust != 0 {
+			wind = fmt.Sprintf("ветер %v %vм/с с порывами до %vм/с", direction, speed, gust)
+		} else {
+			wind = fmt.Sprintf("ветер %v %vм/с", direction, speed)
+		}
+		ws = append(ws, fmt.Sprintf("%v в городе %v %v, температура воздуха %v°С, %v."+
+			"Влажность воздуха %v%v.\n",
+			time.Format("2006-01-02"), l[i].Name, l[i].GetCloudiness(), temp, wind, l[i].GetHumidity(),
+			"%"))
+		time = time.AddDate(0, 0, 1)
+	}
 	return ws
 }

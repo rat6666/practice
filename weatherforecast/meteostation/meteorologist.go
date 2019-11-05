@@ -2,68 +2,39 @@ package meteostation
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io/ioutil"
-	"net/http"
-	"strconv"
 )
 
+const myError = "city not found"
+
 type Meteorologist struct {
-	cnt int
 }
 
-func (Meteorologist) WeatherForecast(city string) Weather {
-	url := "http://api.openweathermap.org/data/2.5/weather?q=" +
-		city +
-		"&lang=ru" +
-		"&units=metric" +
-		"&appid=2c19a8c670afc70f2ae7a81f229fce3d"
-
-	resp, err := http.Get(url)
-	if err != nil {
-		fmt.Println("Error")
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Error")
-	}
+func (Meteorologist) WeatherForecast(city string) (Weather, error) {
+	body := GetUrlCurrent(city)
 	var NewStation Weather
-	err = json.Unmarshal(body, &NewStation)
+	err := json.Unmarshal(body, &NewStation)
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Println(err)
 	}
-	return NewStation
+	if NewStation.Message == myError {
+		err := errors.New(myError)
+		return NewStation, err
+	}
+	return NewStation, nil
 }
 
-func (Meteorologist) DailyForecast(city string, cnt int) Weather {
-	url := "http://api.openweathermap.org/data/2.5/find?q=" +
-		city +
-		"&units=metric" +
-		"&lang=ru" +
-		"&cnt=" +
-		strconv.Itoa(cnt) +
-		"&appid=2c19a8c670afc70f2ae7a81f229fce3d"
-
-	resp, err := http.Get(url)
-	if err != nil {
-		fmt.Println("Error")
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Error")
-	}
-	type test interface{}
-	var itest test
-	err = json.Unmarshal(body, &itest)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
-	fmt.Println(itest)
-
+func (Meteorologist) DailyForecast(city string, cnt int) (Weather, error) {
+	body := GetUrlDaily(city, cnt)
 	var NewStation Weather
-	err = json.Unmarshal(body, &NewStation)
+	err := json.Unmarshal(body, &NewStation)
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Println(err)
 	}
-	return NewStation
+	if NewStation.Message == myError {
+		err := errors.New(myError)
+		return NewStation, err
+	}
+	return NewStation, nil
 }
