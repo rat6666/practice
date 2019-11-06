@@ -2,6 +2,12 @@ package linkedlist
 
 import "fmt"
 
+type LinkedList struct {
+	Length int
+	First  *Node
+	Last   *Node
+}
+
 //AddNode Creating NODE
 func (c *LinkedList) AddNode(value int) {
 	newNode := &Node{}
@@ -34,10 +40,11 @@ func (c *LinkedList) RemoveNode(removeIndex int) {
 		fmt.Println("Index out of range")
 		return
 	}
-	remove := c.First
-	for i := 0; i < removeIndex; i++ {
-		remove = remove.Next
-	}
+	// remove := c.First
+	// for i := 0; i < removeIndex; i++ {
+	// 	remove = remove.Next
+	// }
+	remove := c.Get(removeIndex)
 	remove.Next.Prev = remove.Prev
 	remove.Prev.Next = remove.Next
 	c.Length--
@@ -54,16 +61,13 @@ func (c *LinkedList) PrintCollection() {
 }
 
 func (c *LinkedList) FirstElement() *Node {
-	fmt.Printf("First element in collection is %d.\n", c.First.Value)
 	return c.First
 }
 
 func (c *LinkedList) LastElement() *Node {
-	fmt.Printf("Last element in collection is %d.\n", c.Last.Value)
 	return c.Last
 }
 
 func (c *LinkedList) LengthCollection() int {
-	fmt.Printf("Collection Length is %d.\n", c.Length)
 	return c.Length
 }

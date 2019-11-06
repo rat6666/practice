@@ -1,5 +1,11 @@
 package linkedlist
 
+type Node struct {
+	Value int
+	Next  *Node
+	Prev  *Node
+}
+
 //GetValue Return NODE value
 func (e *Node) GetValue() int {
 	return e.Value
