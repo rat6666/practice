@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	bot, err := ManualBot("English")
+	bot, err := ManualBot("English!")
 	if err != nil {
 		fmt.Println(err)
 	}
